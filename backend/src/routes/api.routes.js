@@ -9,7 +9,7 @@ router.use(cors());
 
 router.use(express.json());
 
-router.get('/', () => {});
+router.get('/number', numberController.getNumber);
 router.post('/number', numberController.saveNumber);
 
 export default router;
