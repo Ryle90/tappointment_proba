@@ -1,0 +1,88 @@
+@import 'bootstrap/scss/bootstrap';
+
+.calculator {
+    margin: auto;
+    margin-top: 30px;
+    background: whitesmoke;
+    border: 1px solid gray;
+    border-radius: 10px;
+    width: 300px;
+
+    .display {
+
+        margin-bottom: 10px;
+
+        p {
+            margin-bottom: 0;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            background: rgba(194, 194, 194, 0.7);
+            padding: 20px;
+            font-size: 18px;
+            text-align: right;
+            font-weight: bolder;            
+        }
+    }
+
+    button {
+        margin: 3px;
+    }
+
+    .btn:focus {
+        box-shadow: none;
+    }
+
+    .btn-primary:focus {
+        background: $primary;
+    }
+
+    .btn-success:focus {
+        background: $success;
+    }
+
+    .btn-danger:focus {
+        background: $danger;
+    }
+
+    .buttons {
+
+        margin: 10px;
+
+        .upper-row-buttons {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-buttons {
+            display: flex;
+            justify-content: space-between;
+
+            .operator-buttons {
+                display: flex;
+                flex-direction: column;
+                width: 60px;
+            }
+
+            .number-decimal-buttons {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+
+                .number-buttons {
+                    button {
+                        width: 60px;
+                        height: 50px;
+                    }
+                }
+
+                .other-buttons {
+                    align-self: center;
+                    button {
+                        width: 70px;
+                    }
+                }
+            }
+        }
+    }
+}
