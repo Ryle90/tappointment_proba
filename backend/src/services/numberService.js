@@ -1,4 +1,5 @@
 import fs from 'fs';
+import fsPromises from 'fs/promises';
 
 import ValidationError from '../utils/validationError.js';
 import ContentError from '../utils/contentError.js';
@@ -13,7 +14,7 @@ const numberService = {
             throw new ValidationError('This is not a number');
         }
 
-        fs.writeFileSync('number.txt', JSON.stringify(number));
+        await fsPromises.writeFile('number.txt', JSON.stringify(number));
         
         return number
     },
@@ -21,7 +22,8 @@ const numberService = {
     async getNumber () {
 
         if(fs.existsSync('number.txt')) {
-            const number = JSON.parse(fs.readFileSync('number.txt'));
+            const content = await fsPromises.readFile('number.txt');
+            const number = JSON.parse(content);
             return number
         } else {
             throw new ContentError('There is not saved number')
