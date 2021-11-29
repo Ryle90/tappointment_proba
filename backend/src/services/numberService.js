@@ -8,6 +8,11 @@ const numberService = {
         if(!number) {
             throw new ValidationError('Missing number');
         }
+
+        if (!this.checkIsValidNumber(number)) {
+            throw new ValidationError('This is not a number');
+        }
+
         fs.writeFileSync('number.txt', JSON.stringify(number));
         
         return number
@@ -21,6 +26,10 @@ const numberService = {
         } else {
             throw new ContentError('There is not saved number')
         }
+    },
+
+    checkIsValidNumber(number) {
+        return typeof(number) === "number"
     }
 }
 
