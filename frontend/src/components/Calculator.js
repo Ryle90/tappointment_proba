@@ -9,6 +9,7 @@ export default function Calculator () {
         sequenceOfOperation: [],
         isLastClickOperation: false,
         isLastClickEquation: false,
+        isNegativ: false,
         lastOperationSymbol: ''
     })
 
@@ -130,8 +131,8 @@ export default function Calculator () {
                 <div className="buttons">
                     <div className="upper-row-buttons">
                         <div className="memory-buttons">
-                            <button className="btn btn-success">MS</button>
                             <button className="btn btn-success">MR</button>
+                            <button className="btn btn-success">MS</button>
                             <button className="btn btn-success">MC</button>
                         </div>
                         <div className="clear-buttons">
