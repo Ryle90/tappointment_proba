@@ -1,40 +1,74 @@
 import { Container } from "react-bootstrap";
 import { useState } from "react";
 
+import calculateSolution from "../utils/calculateSolution";
 
 export default function Calculator () {
 
+    const [datasToCalculate, setDatasToCalculate] = useState({
+        sequenceOfOperation: [],
+        isLastClickOperation: false,
+        isLastClickEquation: false,
+        lastOperationSymbol: ''
+    })
+
     const [actualNumber, setActualNumber] = useState('0');
 
-    function typeActualNumber (event) {
+    function typeActualNumber (event) {        
         const value = event.target.value;
+        let tempActualNumber = actualNumber;
         let newActualNumber;
 
-        if (value !== '.') {            
+        if (datasToCalculate.isLastClickOperation) {
+            tempActualNumber = '';
+        }
+
+        if (value !== '.') {         
             if (actualNumber === '0') {
                 newActualNumber = value;
             } else {
-                newActualNumber = actualNumber + value;
+                newActualNumber = tempActualNumber + value;
             }
         } else {
             if (!actualNumber.includes('.')) {
-                newActualNumber = actualNumber + value;
+                if (tempActualNumber === '') {
+                    tempActualNumber = '0';
+                }
+                newActualNumber = tempActualNumber + value;
             } else {
-                newActualNumber = actualNumber;
+                newActualNumber = tempActualNumber;
             }
         }
 
-        if (newActualNumber.length <= 25) {
+        if (newActualNumber.length <= 24) {
             setActualNumber(newActualNumber);
         }
+
+        setDatasToCalculate({
+            ...datasToCalculate,
+            isLastClickOperation: false,
+            isLastClickEquation: false,
+        })
 
     }
 
     function clearDisplay () {
+        setDatasToCalculate({
+            ...datasToCalculate,
+            isLastClickOperation: false,
+            isLastClickEquation: false,
+            sequenceOfOperation: []
+        })
         setActualNumber('0');
     }
 
     function cancelLastNumber () {
+        setDatasToCalculate({
+            ...datasToCalculate,
+            isLastClickOperation: false,
+            isLastClickEquation: false
+        })
+
         let newActualNumber;
 
         if(actualNumber.length > 1) {
@@ -46,11 +80,52 @@ export default function Calculator () {
         setActualNumber(newActualNumber);
     }
 
+    function handleOperationButtonsClick (event) {
+        const value = event.target.value;
+        let newSequenceArray = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
+        let isLastClickEquation = datasToCalculate.isLastClickEquation;
+
+        /*eslint-disable*/
+        if (value !== '=' && datasToCalculate.isLastClickOperation === false || isLastClickEquation) {
+            newSequenceArray.push(actualNumber);
+            newSequenceArray.push(value);
+        } else if (value !== '=') {
+            newSequenceArray.pop();
+            newSequenceArray.push(value);
+        }
+        /*eslint-enable*/
+
+        if(value === '=') {
+            newSequenceArray = [];
+            isLastClickEquation = true;
+        }
+        
+        if (value === '=' || datasToCalculate.sequenceOfOperation.length !== 0) {
+            const sequenceOfSolution = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
+            sequenceOfSolution.push(actualNumber)
+            const solution = calculateSolution(sequenceOfSolution);
+            setActualNumber(solution);
+        }
+
+        setDatasToCalculate({
+            ...datasToCalculate,
+            isLastClickOperation: true,
+            isLastClickEquation,
+            sequenceOfOperation: newSequenceArray,
+            lastOperationSymbol: value
+        })
+    }
+    
     return (
         <Container>
             <div className="calculator">
                 <div className="display">
-                    <p>{actualNumber}</p>
+                    {!datasToCalculate.isLastClickOperation &&
+                        <p>{actualNumber}</p>
+                    }
+                    {datasToCalculate.isLastClickOperation &&
+                        <p>{actualNumber}{datasToCalculate.lastOperationSymbol}</p>
+                    }
                 </div>
                 <div className="buttons">
                     <div className="upper-row-buttons">
@@ -89,11 +164,11 @@ export default function Calculator () {
                             </div>
                         </div>
                         <div className="operator-buttons">
-                            <button className="btn btn-primary">/</button>
-                            <button className="btn btn-primary">*</button>
-                            <button className="btn btn-primary">-</button>
-                            <button className="btn btn-primary">+</button>
-                            <button className="btn btn-danger">=</button>
+                            <button value="/" className="btn btn-primary" onClick={handleOperationButtonsClick}>/</button>
+                            <button value="*" className="btn btn-primary" onClick={handleOperationButtonsClick}>*</button>
+                            <button value="-" className="btn btn-primary" onClick={handleOperationButtonsClick}>-</button>
+                            <button value="+" className="btn btn-primary" onClick={handleOperationButtonsClick}>+</button>
+                            <button value="=" className="btn btn-danger" onClick={handleOperationButtonsClick}>=</button>
                         </div>
                     </div>
                 </div>
