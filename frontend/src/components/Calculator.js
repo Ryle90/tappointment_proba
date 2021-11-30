@@ -1,6 +1,11 @@
 import { Container } from "react-bootstrap";
+import { useState } from "react";
+
 
 export default function Calculator () {
+
+    const [actualNumber, setActualNumber] = useState(''); 
+
     return (
         <Container>
             <div className="calculator">
