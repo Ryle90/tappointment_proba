@@ -9,7 +9,6 @@ export default function Calculator () {
         sequenceOfOperation: [],
         isLastClickOperation: false,
         isLastClickEquation: false,
-        isNegativ: false,
         lastOperationSymbol: ''
     })
 
@@ -31,7 +30,7 @@ export default function Calculator () {
                 newActualNumber = tempActualNumber + value;
             }
         } else {
-            if (!actualNumber.includes('.')) {
+            if (!actualNumber.toString().includes('.')) {
                 if (tempActualNumber === '') {
                     tempActualNumber = '0';
                 }
@@ -85,14 +84,21 @@ export default function Calculator () {
         const value = event.target.value;
         let newSequenceArray = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
         let isLastClickEquation = datasToCalculate.isLastClickEquation;
+        let isOperationSymbolChange = false;
 
         /*eslint-disable*/
         if (value !== '=' && datasToCalculate.isLastClickOperation === false || isLastClickEquation) {
             newSequenceArray.push(actualNumber);
             newSequenceArray.push(value);
+
+            if (isLastClickEquation) {
+                isOperationSymbolChange = true;
+            }
+
         } else if (value !== '=') {
             newSequenceArray.pop();
             newSequenceArray.push(value);
+            isOperationSymbolChange = true;
         }
         /*eslint-enable*/
 
@@ -101,11 +107,13 @@ export default function Calculator () {
             isLastClickEquation = true;
         }
         
-        if (value === '=' || datasToCalculate.sequenceOfOperation.length !== 0) {
-            const sequenceOfSolution = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
-            sequenceOfSolution.push(actualNumber)
-            const solution = calculateSolution(sequenceOfSolution);
-            setActualNumber(solution);
+        if(!isOperationSymbolChange) {
+            if (value === '=' || datasToCalculate.sequenceOfOperation.length !== 0) {
+                const sequenceOfSolution = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
+                sequenceOfSolution.push(actualNumber)
+                const solution = calculateSolution(sequenceOfSolution);
+                setActualNumber(solution);
+            }
         }
 
         setDatasToCalculate({
