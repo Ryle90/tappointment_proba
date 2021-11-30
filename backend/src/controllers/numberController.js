@@ -20,6 +20,15 @@ const numberController = {
         } catch (err) {
             next(err);
         }
+    },
+
+    async deleteNumber(req, res, next) {
+        try {
+            await numberService.deleteNumber();
+            res.json({});
+        } catch (err) {
+            next(err);
+        } 
     }
 }
 

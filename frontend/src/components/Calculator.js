@@ -2,6 +2,8 @@ import { Container } from "react-bootstrap";
 import { useState } from "react";
 
 import calculateSolution from "../utils/calculateSolution";
+import { memoryEndpoint } from "../utils/endpoint";
+import requestToBackend from "../utils/requestToBackend";
 
 export default function Calculator () {
 
@@ -9,10 +11,11 @@ export default function Calculator () {
         sequenceOfOperation: [],
         isLastClickOperation: false,
         isLastClickEquation: false,
-        lastOperationSymbol: ''
+        lastOperationSymbol: '',
     })
 
     const [actualNumber, setActualNumber] = useState('0');
+    const [otherMessage, setOtherMessage] = useState('');
 
     function typeActualNumber (event) {        
         const value = event.target.value;
@@ -50,6 +53,8 @@ export default function Calculator () {
             isLastClickEquation: false,
         })
 
+        setOtherMessage('');
+
     }
 
     function clearDisplay () {
@@ -60,6 +65,7 @@ export default function Calculator () {
             sequenceOfOperation: []
         })
         setActualNumber('0');
+        setOtherMessage('');
     }
 
     function cancelLastNumber () {
@@ -78,6 +84,7 @@ export default function Calculator () {
         }
 
         setActualNumber(newActualNumber);
+        setOtherMessage('');
     }
 
     function handleOperationButtonsClick (event) {
@@ -112,6 +119,13 @@ export default function Calculator () {
                 const sequenceOfSolution = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
                 sequenceOfSolution.push(actualNumber)
                 const solution = calculateSolution(sequenceOfSolution);
+
+                if (solution === Infinity) {
+                    clearDisplay();
+                    setOtherMessage('You cannot divide by zero');
+                    return
+                }
+
                 setActualNumber(solution);
             }
         }
@@ -123,25 +137,81 @@ export default function Calculator () {
             sequenceOfOperation: newSequenceArray,
             lastOperationSymbol: value
         })
+
+        setOtherMessage('');
+    }
+
+    function displayOtherMessage(message) {
+        setOtherMessage(message);
+
+        setTimeout(() => {
+            setOtherMessage('');
+        }, 1500);
+    }
+
+    async function handleSaveNumber () {
+        const number = Number(actualNumber);
+
+        const dataToBackend = {
+            number
+        }
+
+        try {
+            const result = await requestToBackend('POST', memoryEndpoint, dataToBackend);
+
+            if (result.ok) {
+                displayOtherMessage('Number saved');
+            }
+        } catch (err) {
+            displayOtherMessage('An error occurred')
+            console.error(err);
+        }
+    }
+
+    async function getNumber() {
+        try {
+            const result = await requestToBackend('GET', memoryEndpoint);
+
+            if(result.ok) {
+                const response = await result.json();
+                clearDisplay();
+                setActualNumber(response.number);
+            } else if (result.status === 404) {
+                displayOtherMessage('Memory is clear')
+            }
+        } catch (err) {}
+    }
+
+    async function deleteNumber () {
+        try {
+            const result = await requestToBackend('DELETE', memoryEndpoint);
+
+            if (result.ok) {
+                displayOtherMessage('Memory has been cleared')
+            }
+        } catch (err) {}
     }
     
     return (
         <Container>
             <div className="calculator">
                 <div className="display">
-                    {!datasToCalculate.isLastClickOperation &&
+                    {!datasToCalculate.isLastClickOperation && otherMessage === '' &&
                         <p>{actualNumber}</p>
                     }
-                    {datasToCalculate.isLastClickOperation &&
+                    {datasToCalculate.isLastClickOperation && otherMessage === '' &&
                         <p>{actualNumber}{datasToCalculate.lastOperationSymbol}</p>
+                    }
+                    {otherMessage !== '' &&
+                        <p>{otherMessage}</p>
                     }
                 </div>
                 <div className="buttons">
                     <div className="upper-row-buttons">
                         <div className="memory-buttons">
-                            <button className="btn btn-success">MR</button>
-                            <button className="btn btn-success">MS</button>
-                            <button className="btn btn-success">MC</button>
+                            <button className="btn btn-success" onClick={getNumber}>MR</button>
+                            <button className="btn btn-success" onClick={handleSaveNumber}>MS</button>
+                            <button className="btn btn-success" onClick={deleteNumber}>MC</button>
                         </div>
                         <div className="clear-buttons">
                             <button className="btn btn-danger" onClick={clearDisplay}>C</button>

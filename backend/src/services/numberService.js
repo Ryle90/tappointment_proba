@@ -30,6 +30,11 @@ const numberService = {
         }
     },
 
+    async deleteNumber() {
+        await fsPromises.unlink('number.txt');
+        return
+    },
+
     checkIsValidNumber(number) {
         return typeof(number) === "number"
     }

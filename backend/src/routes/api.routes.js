@@ -11,5 +11,6 @@ router.use(express.json());
 
 router.get('/number', numberController.getNumber);
 router.post('/number', numberController.saveNumber);
+router.delete('/number', numberController.deleteNumber);
 
 export default router;
