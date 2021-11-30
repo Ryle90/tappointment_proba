@@ -31,7 +31,9 @@ const numberService = {
     },
 
     async deleteNumber() {
-        await fsPromises.unlink('number.txt');
+        if (fs.existsSync('number.txt')) {
+            await fsPromises.unlink('number.txt');
+        }
         return
     },
 
