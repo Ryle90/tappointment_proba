@@ -1,0 +1,7 @@
+Kérlek, írd össze, hogy mit változtatnál a fentiekhez képest, 
+ha egy skálázható, több szerveres környezetben kellene üzemeltetni a kódot, 
+akár több ezer felhasználóval.
+
+-A számot fájl helyett adatbázisba menteném
+-A kliens oldalt authentikálom valamilyen módon (pl session id)
+-A szervert konténerizálnám

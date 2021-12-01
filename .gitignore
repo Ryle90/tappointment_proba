@@ -3,3 +3,5 @@ yarn.lock
 .env
 logs
 *.txt
+
+!kerdes.txt
