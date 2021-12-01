@@ -164,6 +164,8 @@ export default function Calculator () {
             if (isLastClickEquation) {
                 isOperationSymbolChange = true;
             }
+
+            isLastClickEquation = false;
         
         //If you already pressed once '+', '-', '*', or '/' buttons,
         //the last operation symbol in the array will be changed to the new one
@@ -178,7 +180,7 @@ export default function Calculator () {
             //Only pressing of equality sign button will make empty the array of sequence of operation
             newSequenceArray = [];
             isLastClickEquation = true;
-            lastOperationSymbol = ''
+            lastOperationSymbol = '';
         } else {
             lastOperationSymbol = value;
         }
@@ -188,7 +190,13 @@ export default function Calculator () {
         if(!isOperationSymbolChange) {
             if (value === '=' || datasToCalculate.sequenceOfOperation.length !== 0) {
                 const sequenceOfSolution = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
-                sequenceOfSolution.push(actualNumber)
+
+                if (!datasToCalculate.isLastClickOperation) {
+                    sequenceOfSolution.push(actualNumber);
+                } else {
+                    sequenceOfSolution.pop();
+                }
+
                 const solution = calculateSolution(sequenceOfSolution);
 
                 if (solution === Infinity) {
