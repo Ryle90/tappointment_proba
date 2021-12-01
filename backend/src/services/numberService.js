@@ -6,7 +6,7 @@ import ContentError from '../utils/contentError.js';
 
 const numberService = {
     async saveNumber(number) {
-        if(!number) {
+        if(!number && number !== 0) {
             throw new ValidationError('Missing number');
         }
 

@@ -11,12 +11,31 @@
     .display {
 
         margin-bottom: 10px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        background: rgba(194, 194, 194, 0.702);
+        height: 114.5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
 
-        p {
+        .operation-sequence-container {
+            display: flex;
+            justify-content: flex-end;
+            max-width: 100%;
+            margin: 0 20px;
+            padding-top: 20px;
+            overflow: hidden;
+            white-space: nowrap;
+
+            p {
+                margin: 0;
+                font-size: 15px;
+            }
+        }
+
+        .main-display {
             margin-bottom: 0;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            background: rgba(194, 194, 194, 0.7);
             padding: 20px;
             height: 67px;
             font-size: 18px;
@@ -45,39 +64,39 @@
         background: $danger;
     }
 
-    .buttons {
+    .button-group {
 
         margin: 10px;
 
-        .upper-row-buttons {
+        .upper-row-button-group {
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
         }
 
-        .main-buttons {
+        .main-button-group {
             display: flex;
             justify-content: space-between;
 
-            .operator-buttons {
+            .operator-button-group {
                 display: flex;
                 flex-direction: column;
                 width: 60px;
             }
 
-            .number-decimal-buttons {
+            .number-decimal-button-group {
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
 
-                .number-buttons {
+                .number-button-group {
                     button {
                         width: 60px;
                         height: 50px;
                     }
                 }
 
-                .other-buttons {
+                .other-button-group {
                     align-self: center;
                     button {
                         width: 70px;

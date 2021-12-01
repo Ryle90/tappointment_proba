@@ -92,6 +92,7 @@ export default function Calculator () {
         let newSequenceArray = JSON.parse(JSON.stringify(datasToCalculate.sequenceOfOperation));
         let isLastClickEquation = datasToCalculate.isLastClickEquation;
         let isOperationSymbolChange = false;
+        let lastOperationSymbol;
 
         /*eslint-disable*/
         if (value !== '=' && datasToCalculate.isLastClickOperation === false || isLastClickEquation) {
@@ -112,6 +113,9 @@ export default function Calculator () {
         if(value === '=') {
             newSequenceArray = [];
             isLastClickEquation = true;
+            lastOperationSymbol = ''
+        } else {
+            lastOperationSymbol = value;
         }
         
         if(!isOperationSymbolChange) {
@@ -135,7 +139,7 @@ export default function Calculator () {
             isLastClickOperation: true,
             isLastClickEquation,
             sequenceOfOperation: newSequenceArray,
-            lastOperationSymbol: value
+            lastOperationSymbol
         })
 
         setOtherMessage('');
@@ -174,10 +178,9 @@ export default function Calculator () {
 
             if(result.ok) {
                 const response = await result.json();
-                clearDisplay();
                 setActualNumber(response.number);
             } else if (result.status === 404) {
-                displayOtherMessage('Memory is clear')
+                displayOtherMessage('Memory is empty')
             }
         } catch (err) {}
     }
@@ -196,53 +199,58 @@ export default function Calculator () {
         <Container>
             <div className="calculator">
                 <div className="display">
+                    <div className="operation-sequence-container">
+                        {datasToCalculate.sequenceOfOperation.map((numberOrOperator, index) => (
+                            <p key={`os${index}`}>{numberOrOperator}</p>
+                        ))}
+                    </div>
                     {!datasToCalculate.isLastClickOperation && otherMessage === '' &&
-                        <p>{actualNumber}</p>
+                        <p className="main-display">{actualNumber}</p>
                     }
                     {datasToCalculate.isLastClickOperation && otherMessage === '' &&
-                        <p>{actualNumber}{datasToCalculate.lastOperationSymbol}</p>
+                        <p className="main-display">{actualNumber}{datasToCalculate.lastOperationSymbol}</p>
                     }
                     {otherMessage !== '' &&
-                        <p>{otherMessage}</p>
+                        <p className="main-display">{otherMessage}</p>
                     }
                 </div>
-                <div className="buttons">
-                    <div className="upper-row-buttons">
-                        <div className="memory-buttons">
+                <div className="button-group">
+                    <div className="upper-row-button-group">
+                        <div className="memory-button-group">
                             <button className="btn btn-success" onClick={getNumber}>MR</button>
                             <button className="btn btn-success" onClick={handleSaveNumber}>MS</button>
                             <button className="btn btn-success" onClick={deleteNumber}>MC</button>
                         </div>
-                        <div className="clear-buttons">
+                        <div className="clear-button-group">
                             <button className="btn btn-danger" onClick={clearDisplay}>C</button>
                             <button className="btn btn-danger" onClick={cancelLastNumber}>&#8612;</button>
                         </div>
                     </div>
-                    <div className="main-buttons">
-                        <div className="number-decimal-buttons">
-                            <div className="number-buttons">
-                                <div className="n7-n9-buttons">
+                    <div className="main-button-group">
+                        <div className="number-decimal-button-group">
+                            <div className="number-button-group">
+                                <div className="n7-n9-button-group">
                                     <button value="7" className="btn btn-primary" onClick={typeActualNumber}>7</button>
                                     <button value="8" className="btn btn-primary" onClick={typeActualNumber}>8</button>
                                     <button value="9" className="btn btn-primary" onClick={typeActualNumber}>9</button>
                                 </div>
-                                <div className="n4-n6-buttons">
+                                <div className="n4-n6-button-group">
                                     <button value="4" className="btn btn-primary" onClick={typeActualNumber}>4</button>
                                     <button value="5" className="btn btn-primary" onClick={typeActualNumber}>5</button>
                                     <button value="6" className="btn btn-primary" onClick={typeActualNumber}>6</button>
                                 </div>
-                                <div className="n1-n3-buttons">
+                                <div className="n1-n3-button-group">
                                     <button value="1" className="btn btn-primary" onClick={typeActualNumber}>1</button>
                                     <button value="2" className="btn btn-primary" onClick={typeActualNumber}>2</button>
                                     <button value="3" className="btn btn-primary" onClick={typeActualNumber}>3</button>
                                 </div>
                             </div>
-                            <div className="other-buttons">
+                            <div className="other-button-group">
                                 <button value="0" className="btn btn-primary" onClick={typeActualNumber}>0</button>
                                 <button value="." className="btn btn-primary" onClick={typeActualNumber}>.</button>
                             </div>
                         </div>
-                        <div className="operator-buttons">
+                        <div className="operator-button-group">
                             <button value="/" className="btn btn-primary" onClick={handleOperationButtonsClick}>/</button>
                             <button value="*" className="btn btn-primary" onClick={handleOperationButtonsClick}>*</button>
                             <button value="-" className="btn btn-primary" onClick={handleOperationButtonsClick}>-</button>
