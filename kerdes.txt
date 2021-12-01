@@ -4,4 +4,4 @@ akár több ezer felhasználóval.
 
 -A számot fájl helyett adatbázisba menteném
 -A kliens oldalt authentikálom valamilyen módon (pl session id)
--A szervert konténerizálnám
+-A szervert konténerizálnám (Docker)
